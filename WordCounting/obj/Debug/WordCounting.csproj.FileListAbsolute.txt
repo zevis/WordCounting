@@ -1,0 +1,10 @@
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\bin\Debug\WordCounting.exe.config
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\bin\Debug\WordCounting.exe
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\bin\Debug\WordCounting.pdb
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\obj\Debug\WordCounting.csprojAssemblyReference.cache
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\obj\Debug\WordCounting.csproj.CoreCompileInputs.cache
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\obj\Debug\WordCounting.exe
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\obj\Debug\WordCounting.pdb
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\bin\Debug\System.Threading.Tasks.Dataflow.dll
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\bin\Debug\System.Threading.Tasks.Dataflow.xml
+C:\Users\ZEVIS\source\repos\WordCounting\WordCounting\obj\Debug\WordCounting.csproj.CopyComplete
