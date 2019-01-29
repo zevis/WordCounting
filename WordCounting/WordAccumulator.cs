@@ -4,11 +4,20 @@ using System.Runtime.CompilerServices;
 
 namespace WordCounting
 {
+    /// <summary>
+    /// Класс с логикой для подсчета и суммирования частот слов.
+    /// </summary>
     public class WordAccumulator
     {
+        /// <summary>
+        /// Результирующие слова с их частотами.
+        /// </summary>
         public FastDictionary<(int, int, byte[]), BoxedInt> WordCountPairs { get; } =
             new FastDictionary<(int, int, byte[]), BoxedInt>(new WordsComparer());
 
+        /// <summary>
+        /// Компаратор для сравнения слов в массиве.
+        /// </summary>
         private class WordsComparer : IEqualityComparer<(int, int, byte[])>
         {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -67,28 +76,34 @@ namespace WordCounting
             }
         }
 
-        public void Accumulate(FastDictionary<(int, int, byte[]), BoxedInt> word_count_pairs)
+        /// <summary>
+        /// Добавить к результирующем частотам слов.
+        /// </summary>
+        public void Accumulate(FastDictionary<(int, int, byte[]), BoxedInt> wordCountPairs)
         {
-            foreach (var word_count_pair in word_count_pairs)
+            foreach (var wordCountPair in wordCountPairs)
             {
-                if (WordCountPairs.TryGetValue(word_count_pair.Key, out BoxedInt val))
+                if (WordCountPairs.TryGetValue(wordCountPair.Key, out BoxedInt val))
                 {
-                    val.Value += word_count_pair.Value.Value;
+                    val.Value += wordCountPair.Value.Value;
                 }
                 else
                 {
-                    WordCountPairs[word_count_pair.Key] = new BoxedInt {Value = word_count_pair.Value.Value};
+                    WordCountPairs[wordCountPair.Key] = new BoxedInt {Value = wordCountPair.Value.Value};
                 }
             }
         }
 
+        /// <summary>
+        /// Получить слова с их частотой для части от полного набора байт.
+        /// </summary>
         public static FastDictionary<(int, int, byte[]), BoxedInt> GetWordCountPairs((int, int, byte[]) part)
         {
             WordsComparer comp = new WordsComparer();
             FastDictionary<(int, int, byte[]), BoxedInt> dict =
                 new FastDictionary<(int, int, byte[]), BoxedInt>(20000, comp);
 
-            int current_word_start = part.Item1;
+            int currentWordStart = part.Item1;
             int end = part.Item2;
             byte[] bytes = part.Item3;
 
@@ -106,6 +121,9 @@ namespace WordCounting
                     continue;
                 }
 
+                if (bytes[i] >= 48 && bytes[i] <= 57)
+                    continue;
+
                 if (bytes[i] == 184)
                 {
                     continue;
@@ -117,15 +135,15 @@ namespace WordCounting
                     continue;
                 }
 
-                var len = i - current_word_start;
+                var len = i - currentWordStart;
 
                 if (len == 0)
                 {
-                    current_word_start = i + 1;
+                    currentWordStart = i + 1;
                     continue;
                 }
 
-                (int, int, byte[]) word = (current_word_start, len, bytes);
+                (int, int, byte[]) word = (currentWordStart, len, bytes);
                 if (dict.TryGetValue(word, out BoxedInt val))
                 {
                     val.Value++;
@@ -135,7 +153,26 @@ namespace WordCounting
                     dict[word] = new BoxedInt();
                 }
 
-                current_word_start = i + 1;
+                currentWordStart = i + 1;
+            }
+
+            {
+                var len = end - currentWordStart;
+
+                if (len == 0)
+                {
+                    return dict;
+                }
+
+                (int, int, byte[]) word = (currentWordStart, len, bytes);
+                if (dict.TryGetValue(word, out BoxedInt val))
+                {
+                    val.Value++;
+                }
+                else
+                {
+                    dict[word] = new BoxedInt();
+                }
             }
 
             return dict;
