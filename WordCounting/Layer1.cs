@@ -1,29 +1,25 @@
-﻿using Dictionary;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
 
 namespace WordCounting
 {
     class Layer1
     {
-        public async Task Start()
+        public async Task Start(string input, string output, int cores)
         {
             var sw = Stopwatch.StartNew();
 
-            var Filee = File.ReadAllBytes(@"c:\1251.txt");
+            var Filee = File.ReadAllBytes(input);
             Console.WriteLine(sw.Elapsed);
             var l2 = new Layer2();
-            l2.Configure();
-            var part_size = Filee.Length / (Environment.ProcessorCount * 4);
+            l2.Configure(cores);
+            var part_size = Filee.Length / (cores * 4);
             var current_start = 0;
-            for (int i = 1; i <= (Environment.ProcessorCount * 4) - 1; i++)
+            for (int i = 1; i <= (cores * 4) - 1; i++)
             {
                 var current_end = part_size * i;
                 while (true)
@@ -46,10 +42,10 @@ namespace WordCounting
             }
 
             await l2.Enqueue((current_start, Filee.Length, Filee));
-            var res = l2.GetRes().Result;
+            var res = await l2.GetRes();
 
             Console.WriteLine(sw.Elapsed);
-            File.WriteAllText(@"c:\txt.txt", string.Join("\r\n",
+            File.WriteAllText(output, string.Join("\r\n",
                 res.OrderByDescending(x => x.Value.Value).Select(x =>
                     Encoding.GetEncoding(1251).GetString(Filee, Math.Max(0, x.Key.Item1), x.Key.Item2) + " " +
                     x.Value.Value)));

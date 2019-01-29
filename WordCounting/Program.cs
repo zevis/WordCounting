@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace WordCounting
 {
@@ -6,7 +7,7 @@ namespace WordCounting
     {
         static async Task Main(string[] args)
         {
-            await new Layer1().Start();
+            await new Layer1().Start(@"c:\1251.txt", @"c:\txt.txt", Environment.ProcessorCount);
         }
     }
 }

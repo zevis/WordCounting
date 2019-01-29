@@ -1,5 +1,4 @@
 ﻿using Dictionary;
-using System;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 
@@ -12,13 +11,14 @@ namespace WordCounting
         TransformBlock<(int, int, byte[]), FastDictionary<(int, int, byte[]), BoxedInt>> writer1;
         ActionBlock<FastDictionary<(int, int, byte[]), BoxedInt>> writer2;
 
-        public void Configure()
+        public void Configure(int cores)
         {
             l3 = new Layer3();
-            buffer = new BufferBlock<(int, int, byte[])>(new DataflowBlockOptions());
+            buffer = new BufferBlock<(int, int, byte[])>(new DataflowBlockOptions() { BoundedCapacity = cores * 3 });
             writer1 = new TransformBlock<(int, int, byte[]), FastDictionary<(int, int, byte[]), BoxedInt>>(Layer3.GetWordCountPairs, new ExecutionDataflowBlockOptions
             {
-                MaxDegreeOfParallelism = Environment.ProcessorCount
+                MaxDegreeOfParallelism = cores,
+                BoundedCapacity = cores * 3
             });
             writer2 = new ActionBlock<FastDictionary<(int, int, byte[]), BoxedInt>>(l3.AddToRes, new ExecutionDataflowBlockOptions
             {
