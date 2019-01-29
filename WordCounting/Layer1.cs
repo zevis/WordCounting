@@ -20,9 +20,9 @@ namespace WordCounting
 #endif
             var l2 = new Layer2();
             l2.Configure(cores);
-            var part_size = Filee.Length / (cores * 4);
+            var part_size = Filee.Length / (cores);
             var current_start = 0;
-            for (int i = 1; i <= (cores * 4) - 1; i++)
+            for (int i = 1; i <= (cores) - 1; i++)
             {
                 var current_end = part_size * i;
                 while (true)
