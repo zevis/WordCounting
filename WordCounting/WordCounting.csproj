@@ -52,7 +52,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoxedInt.cs" />
     <Compile Include="FastDictionary.cs" />
+    <Compile Include="Layer1.cs" />
+    <Compile Include="Layer2.cs" />
+    <Compile Include="Layer3.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

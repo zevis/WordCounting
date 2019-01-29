@@ -3,13 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dictionary
 {
@@ -99,7 +93,7 @@ namespace Dictionary
 
         private int _capacity;
 
-        private int _initialCapacity; // This is the initial capacity of the dictionary, we will never shrink beyond this point.
+        private readonly int _initialCapacity; // This is the initial capacity of the dictionary, we will never shrink beyond this point.
         private int _size; // This is the real counter of how many items are in the hash-table (regardless of buckets)
         private int _numberOfUsed; // How many used buckets. 
         private int _numberOfDeleted; // how many occupied buckets are marked deleted
@@ -175,7 +169,7 @@ namespace Dictionary
             {
                 // Initialization through rehashing because the comparer is not the same.
                 var entries = new Entry[newCapacity];
-                BlockCopyMemoryHelper.Memset(entries, new Entry(kUnusedHash, default(TKey), default(TValue)));
+                BlockCopyMemoryHelper.Memset(entries, new Entry(kUnusedHash, default, default));
 
                 // Creating a temporary alias to use for rehashing.
                 this._entries = src._entries;
@@ -205,7 +199,7 @@ namespace Dictionary
 
             // Initialization
             this._entries = new Entry[newCapacity];
-            BlockCopyMemoryHelper.Memset(this._entries, new Entry(kUnusedHash, default(TKey), default(TValue)));
+            BlockCopyMemoryHelper.Memset(this._entries, new Entry(kUnusedHash, default, default));
 
             this._capacity = newCapacity;
 
@@ -284,8 +278,8 @@ namespace Dictionary
             if (_entries[node].Hash < kDeletedHash)
             {
                 _entries[node].Hash = kDeletedHash;
-                _entries[node].Key = default(TKey);
-                _entries[node].Value = default(TValue);
+                _entries[node].Key = default;
+                _entries[node].Value = default;
 
                 _numberOfDeleted++;
                 _size--;
@@ -319,7 +313,7 @@ namespace Dictionary
             newCapacity = Math.Max(DictionaryHelper.NextPowerOf2(newCapacity), _initialCapacity);
 
             var entries = new Entry[newCapacity];
-            BlockCopyMemoryHelper.Memset(entries, new Entry(kUnusedHash, default(TKey), default(TValue)));
+            BlockCopyMemoryHelper.Memset(entries, new Entry(kUnusedHash, default, default));
 
             Rehash(entries);
         }
@@ -399,7 +393,7 @@ namespace Dictionary
         public void Clear()
         {
             this._entries = new Entry[_capacity];
-            BlockCopyMemoryHelper.Memset(this._entries, new Entry(kUnusedHash, default(TKey), default(TValue)));
+            BlockCopyMemoryHelper.Memset(this._entries, new Entry(kUnusedHash, default, default));
 
             this._numberOfUsed = 0;
             this._numberOfDeleted = 0;
@@ -422,7 +416,7 @@ namespace Dictionary
             Contract.Ensures((_capacity & (_capacity - 1)) == 0);
 
             var entries = new Entry[newCapacity];
-            BlockCopyMemoryHelper.Memset(entries, new Entry(kUnusedHash, default(TKey), default(TValue)));
+            BlockCopyMemoryHelper.Memset(entries, new Entry(kUnusedHash, default, default));
 
             Rehash(entries);
         }
@@ -456,7 +450,7 @@ namespace Dictionary
             }
             while (nHash != kUnusedHash);
 
-            value = default(TValue);
+            value = default;
             return false;
 
         }
@@ -751,7 +745,7 @@ namespace Dictionary
                 {
                     this.dictionary = dictionary;
                     index = 0;
-                    currentKey = default(TKey);
+                    currentKey = default;
                 }
 
                 public void Dispose()
@@ -775,7 +769,7 @@ namespace Dictionary
                     }
 
                     index = count + 1;
-                    currentKey = default(TKey);
+                    currentKey = default;
                     return false;
                 }
 
@@ -801,7 +795,7 @@ namespace Dictionary
                 void System.Collections.IEnumerator.Reset()
                 {
                     index = 0;
-                    currentKey = default(TKey);
+                    currentKey = default;
                 }
             }
         }
@@ -872,7 +866,7 @@ namespace Dictionary
                 {
                     this.dictionary = dictionary;
                     index = 0;
-                    currentValue = default(TValue);
+                    currentValue = default;
                 }
 
                 public void Dispose()
@@ -896,7 +890,7 @@ namespace Dictionary
                     }
 
                     index = count + 1;
-                    currentValue = default(TValue);
+                    currentValue = default;
                     return false;
                 }
 
@@ -921,7 +915,7 @@ namespace Dictionary
                 void IEnumerator.Reset()
                 {
                     index = 0;
-                    currentValue = default(TValue);
+                    currentValue = default;
                 }
             }
         }
